@@ -1,5 +1,6 @@
-import { PokemonsResponse, SimplePokemon } from "@/app/pokemons";
-import Image from 'next/image';
+import { PokemonsResponse, SimplePokemon } from "@/pokemons";
+import { PokemonGrid } from "@/pokemons/components/PokemonGrid";
+
 
 
 const getPokemons = async ( limit = 20, offset= 0) : Promise<SimplePokemon> => {
@@ -10,6 +11,8 @@ const getPokemons = async ( limit = 20, offset= 0) : Promise<SimplePokemon> => {
             id: pokemon.url.split('/').at(-2),
             name: pokemon.name
         }))
+
+    //throw new Error('Esto es un error que no debería de suceder');
 
     return pokemons;
 }
@@ -22,22 +25,11 @@ export default async function PokemonsPage() {
     return (
 
         <div className="flex flex-col">
-            
-            <div className="flex flex-wrap gap-10 items-center justify-center">
 
-                {
-                    pokemons.map( pokemon => (
-                        <Image 
-                            key={pokemon.id}
-                            src={`https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/dream-world/${pokemon.id}.svg`}
-                            width={100}
-                            height={100}
-                            alt={pokemon.name}
-                        />
-                    ))
-                }
+            <span className="text-5xl my-2">Listado de Pokemons <small>estático</small></span>
+
+                <PokemonGrid pokemons={pokemons} />
                 
-            </div>
         </div>
     );
 }
