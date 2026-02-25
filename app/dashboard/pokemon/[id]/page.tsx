@@ -1,12 +1,30 @@
 import { Pokemon } from "@/pokemons";
 import Image from "next/image";
 import { notFound } from "next/navigation";
+import { Metadata } from "next";
 
 
 interface Props {
     params: Promise<{ id: string }>;
 }
 
+//! En Build time 
+export async function generateStaticParams() {
+    // Generar las páginas de los primeros 151 pokemosn de manera estática
+    const statict151Pokemons = Array.from({ length: 151 }).map((v, i) => `${i +1}`);
+    // return [
+    //     { id: '1' },
+    //     { id: '2' },
+    //     { id: '3' },
+    //     { id: '4' },
+    //     { id: '5' },
+    //     { id: '6' },
+    // ]
+
+    return statict151Pokemons.map( id => ({
+        id: id
+    }))
+}
 
 export async function generateMetadata(props: Props): Promise<Metadata> {
 
@@ -30,7 +48,10 @@ const getPokemon = async (id: string): Promise<Pokemon> => {
 
     try {
         const pokemon = await fetch(`https://pokeapi.co/api/v2/pokemon/${id}`, {
-            cache: 'force-cache' // TODO: cambiar esto en un futuro 
+            //cache: 'force-cache', // TODO: cambiar esto en un futuro 
+            next: {
+                revalidate: 60 * 60 * 30 * 6
+            }
         }).then(resp => resp.json());
     
         console.log('Se cargó a:', pokemon.name);
